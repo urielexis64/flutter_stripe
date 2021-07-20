@@ -16,7 +16,14 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Pay'),
         centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.add))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                //showLoading(context);
+                showAlert(context, 'hola', 'xd');
+              },
+              icon: const Icon(Icons.add))
+        ],
       ),
       body: Stack(
         children: [
