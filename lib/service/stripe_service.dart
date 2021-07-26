@@ -27,10 +27,22 @@ class StripeService {
         androidPayMode: 'test'));
   }
 
-  Future payWithExistingCard(
+  Future<StripeResponse> payWithExistingCard(
       {required String amount,
       required String currency,
-      required CreditCard card}) async {}
+      required CreditCard card}) async {
+    try {
+      final paymentMethod = await StripePayment.createPaymentMethod(
+          PaymentMethodRequest(card: card));
+
+      final response = await _makePayment(
+          amount: amount, currency: currency, paymentMethod: paymentMethod);
+
+      return response;
+    } catch (e) {
+      return StripeResponse(ok: false, message: e.toString());
+    }
+  }
 
   Future<StripeResponse> payWithNewCard(
       {required String amount, required String currency}) async {

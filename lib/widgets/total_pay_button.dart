@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:stripe_app/bloc/pay/pay_bloc.dart';
+import 'package:stripe_app/helpers/helpers.dart';
+import 'package:stripe_app/service/stripe_service.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 class TotalPayButton extends StatelessWidget {
   const TotalPayButton({Key? key}) : super(key: key);
@@ -12,6 +15,7 @@ class TotalPayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final payBloc = context.watch<PayBloc>().state;
     return Container(
       width: size.width,
       height: size.height * .1,
@@ -28,7 +32,8 @@ class TotalPayButton extends StatelessWidget {
             children: [
               Text('Total',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Text('300.00 USD', style: TextStyle(fontSize: 20))
+              Text('${payBloc.amount} ${payBloc.currency}',
+                  style: TextStyle(fontSize: 20))
             ],
           ),
           _PayButton()
@@ -52,7 +57,7 @@ class _PayButton extends StatelessWidget {
 
   Widget buildCardButton(BuildContext context) {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: () => _payWithExistingCard(context),
       height: 45,
       minWidth: 150,
       shape: const StadiumBorder(),
@@ -71,6 +76,32 @@ class _PayButton extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _payWithExistingCard(BuildContext context) async {
+    showLoading(context);
+    final stripeService = StripeService();
+    final payBloc = context.read<PayBloc>().state;
+    final selectedCreditCard = payBloc.creditCard;
+
+    final expMonth = int.parse(selectedCreditCard!.expiracyDate.split('/')[0]);
+    final expYear = int.parse(selectedCreditCard.expiracyDate.split('/')[1]);
+
+    final resp = await stripeService.payWithExistingCard(
+        amount: payBloc.amountString,
+        currency: payBloc.currency,
+        card: CreditCard(
+            number: selectedCreditCard.cardNumber,
+            cvc: selectedCreditCard.cvv,
+            expMonth: expMonth,
+            expYear: expYear));
+
+    Navigator.pop(context);
+    if (resp.ok) {
+      showAlert(context, 'Credit Card OK', 'All is good!');
+    } else {
+      showAlert(context, 'Something went wrong!', resp.message);
+    }
   }
 
   Widget buildAppleAndGooglePay(BuildContext context) {
