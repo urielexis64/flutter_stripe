@@ -8,7 +8,7 @@ class PayState {
   final CustomCreditCard? creditCard;
 
   PayState(
-      {this.amount = 0,
+      {this.amount = 300.00,
       this.currency = 'USD',
       this.activeCard = false,
       this.creditCard});
