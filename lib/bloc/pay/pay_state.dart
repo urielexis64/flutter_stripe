@@ -2,16 +2,18 @@ part of 'pay_bloc.dart';
 
 @immutable
 class PayState {
-  final double payMount;
+  final double amount;
   final String currency;
   final bool activeCard;
   final CustomCreditCard? creditCard;
 
   PayState(
-      {this.payMount = 0,
+      {this.amount = 0,
       this.currency = 'USD',
       this.activeCard = false,
       this.creditCard});
+
+  String get amountString => '${(amount * 100).floor()}';
 
   PayState copyWith(
           {double? payMount,
@@ -19,7 +21,7 @@ class PayState {
           bool? activeCard,
           CustomCreditCard? creditCard}) =>
       PayState(
-          payMount: payMount ?? this.payMount,
+          amount: payMount ?? this.amount,
           currency: currency ?? this.currency,
           activeCard: activeCard ?? this.activeCard,
           creditCard: creditCard ?? this.creditCard);
