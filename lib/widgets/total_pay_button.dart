@@ -106,7 +106,19 @@ class _PayButton extends StatelessWidget {
 
   Widget buildAppleAndGooglePay(BuildContext context) {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: () async {
+        showLoading(context);
+        final stripeService = StripeService();
+        final payBloc = context.read<PayBloc>().state;
+        final resp = await stripeService.payWithAppleOrGoogle(
+            amount: payBloc.amountString, currency: payBloc.currency);
+        Navigator.pop(context);
+        if (resp.ok) {
+          showAlert(context, 'Google Pay OK', 'All is good!');
+        } else {
+          showAlert(context, 'Something went wrong!', resp.message);
+        }
+      },
       height: 45,
       minWidth: 150,
       shape: const StadiumBorder(),
