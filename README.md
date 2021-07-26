@@ -1,8 +1,12 @@
 # stripe_app
 
-A new Flutter project.
+Aplicación para la gestión de métodos de pago en Flutter con Stripe.
 
-## Demo
+### Métodos de pago cubiertos:
+* Nueva tarjeta
+* Tarjeta existente
+* Google Pay
+* Apple Pay
 
 <div style="text-align: center;">
 <h2><b>Demo</b></h2>
