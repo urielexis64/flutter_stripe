@@ -25,12 +25,14 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () async {
+                showLoading(context);
+
                 final amount = payBloc.state.amountString;
                 final currency = payBloc.state.currency;
 
                 final resp = await stripeService.payWithNewCard(
                     amount: amount, currency: currency);
-
+                Navigator.pop(context);
                 if (resp.ok) {
                   showAlert(context, 'Credit Card OK', 'All is good!');
                 } else {
