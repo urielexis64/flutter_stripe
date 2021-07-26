@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:stripe_app/bloc/pay/pay_bloc.dart';
 
 class TotalPayButton extends StatelessWidget {
   const TotalPayButton({Key? key}) : super(key: key);
@@ -41,7 +43,9 @@ class _PayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return 1 + 1 == 2
+    final payBloc = context.watch<PayBloc>();
+
+    return payBloc.state.activeCard
         ? buildCardButton(context)
         : buildAppleAndGooglePay(context);
   }
@@ -86,7 +90,7 @@ class _PayButton extends StatelessWidget {
             color: Colors.white,
           ),
           Text(
-            'Pay',
+            '   Pay',
             style: TextStyle(color: Colors.white, fontSize: 22),
           )
         ],
